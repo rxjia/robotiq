@@ -39,4 +39,17 @@
 
     </xacro:macro>
 
+    <xacro:macro name="robotiq_gazebo_ref" params="append_prefix:=true prefix fingerprefix link color">
+        <xacro:if value="${append_prefix}">
+            <gazebo reference="${prefix}${fingerprefix}_${link}">
+                <material>${color}</material>
+            </gazebo>
+        </xacro:if>
+        <xacro:unless value="${append_prefix}">
+            <gazebo reference="${link}">
+                <material>${color}</material>
+            </gazebo>
+        </xacro:unless>
+    </xacro:macro>
+
 </robot>
