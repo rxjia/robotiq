@@ -25,6 +25,8 @@
     </link>
   </xacro:macro>
 
+  <xacro:robotiq_gazebo_ref append_prefix="false" prefix="" fingerprefix="" link="robotiq_arg2f_base_link" color="Gazebo/Black"/>
+
   <xacro:macro name="finger_joints" params="prefix fingerprefix reflect">
     <xacro:outer_finger_joint prefix="${prefix}" fingerprefix="${fingerprefix}"/>
     <xacro:inner_knuckle_joint prefix="${prefix}" fingerprefix="${fingerprefix}" reflect="${reflect}"/>
@@ -34,9 +36,14 @@
 
   <xacro:macro name="finger_links" params="prefix fingerprefix stroke">
     <xacro:outer_knuckle prefix="${prefix}" fingerprefix="${fingerprefix}" stroke="${stroke}"/>
+    <xacro:robotiq_gazebo_ref prefix="${prefix}" fingerprefix="${fingerprefix}" link="outer_knuckle" color="Gazebo/Grey"/>
     <xacro:outer_finger prefix="${prefix}" fingerprefix="${fingerprefix}" stroke="${stroke}"/>
+    <xacro:robotiq_gazebo_ref prefix="${prefix}" fingerprefix="${fingerprefix}" link="outer_finger" color="Gazebo/Black"/>
     <xacro:inner_finger prefix="${prefix}" fingerprefix="${fingerprefix}" stroke="${stroke}"/>
+    <xacro:robotiq_gazebo_ref prefix="${prefix}" fingerprefix="${fingerprefix}" link="inner_finger" color="Gazebo/Grey"/>
     <xacro:inner_finger_pad prefix="${prefix}" fingerprefix="${fingerprefix}"/>
     <xacro:inner_knuckle prefix="${prefix}" fingerprefix="${fingerprefix}" stroke="${stroke}"/>
+    <xacro:robotiq_gazebo_ref prefix="${prefix}" fingerprefix="${fingerprefix}" link="inner_knuckle" color="Gazebo/Black"/>
   </xacro:macro>
+  
 </robot>

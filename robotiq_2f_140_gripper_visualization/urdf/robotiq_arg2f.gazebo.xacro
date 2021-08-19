@@ -5,31 +5,31 @@
     <!-- To fix broken gripper in gazebo according to the following issue-->
     <!--https://github.com/ros-industrial/robotiq/issues/150-->
         <gazebo>
-            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_140_1">
+            <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_140_1">
                 <joint>${prefix}finger_joint</joint>
                 <mimicJoint>${prefix}right_outer_knuckle_joint</mimicJoint>
                 <multiplier>-1.0</multiplier>
                 <offset>0.0</offset>
             </plugin>
-            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_140_2">
+            <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_140_2">
                 <joint>${prefix}finger_joint</joint>
                 <mimicJoint>${prefix}left_inner_knuckle_joint</mimicJoint>
                 <multiplier>-1.0</multiplier>
                 <offset>0.0</offset>
             </plugin>
-            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_140_3">
+            <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_140_3">
                 <joint>${prefix}finger_joint</joint>
                 <mimicJoint>${prefix}right_inner_knuckle_joint</mimicJoint>
                 <multiplier>-1.0</multiplier>
                 <offset>0.0</offset>
             </plugin>
-            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_140_4">
+            <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_140_4">
                 <joint>${prefix}finger_joint</joint>
                 <mimicJoint>${prefix}left_inner_finger_joint</mimicJoint>
                 <multiplier>1.0</multiplier>
                 <offset>0.0</offset>
             </plugin>
-            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_140_5">
+            <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_140_5">
                 <joint>${prefix}finger_joint</joint>
                 <mimicJoint>${prefix}right_inner_finger_joint</mimicJoint>
                 <multiplier>1.0</multiplier>
@@ -37,6 +37,19 @@
             </plugin>
         </gazebo>
 
+    </xacro:macro>
+
+    <xacro:macro name="robotiq_gazebo_ref" params="append_prefix:=true prefix fingerprefix link color">
+        <xacro:if value="${append_prefix}">
+            <gazebo reference="${prefix}${fingerprefix}_${link}">
+                <material>${color}</material>
+            </gazebo>
+        </xacro:if>
+        <xacro:unless value="${append_prefix}">
+            <gazebo reference="${link}">
+                <material>${color}</material>
+            </gazebo>
+        </xacro:unless>
     </xacro:macro>
 
 </robot>
