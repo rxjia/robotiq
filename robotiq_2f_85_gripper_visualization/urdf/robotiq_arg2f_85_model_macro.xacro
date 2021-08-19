@@ -193,7 +193,7 @@
   </xacro:macro>
 
   <!-- Initialization of all joints and links -->
-  <xacro:macro name="robotiq_arg2f_85" params="prefix robotiq_transmission_hw_interface">
+  <xacro:macro name="robotiq_arg2f_85" params="prefix robotiq_transmission_hw_interface:=EffortJointInterface">
     <xacro:robotiq_arg2f_base_link prefix="${prefix}"/>
     <xacro:finger_links prefix="${prefix}" fingerprefix="left" stroke="85"/>
     <xacro:finger_links prefix="${prefix}" fingerprefix="right" stroke="85"/>

@@ -12,5 +12,6 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <exec_depend>urdf</exec_depend>
+  <exec_depend>roboticsgroup_upatras_gazebo_plugins</exec_depend>
 
 </package>
