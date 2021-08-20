@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:include filename="$(find robotiq_2f_85_gripper_visualization)/urdf/robotiq_arg2f_transmission.xacro" />
+
+  <xacro:include filename="$(find robotiq_2f_85_gripper_visualization)/urdf/inc/robotiq_arg2f_85_transmissions.xacro" />
 
   <xacro:macro name="outer_knuckle" params="prefix fingerprefix stroke">
     <link name="${prefix}${fingerprefix}_outer_knuckle">
