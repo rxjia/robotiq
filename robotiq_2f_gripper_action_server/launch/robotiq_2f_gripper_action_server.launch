@@ -6,6 +6,16 @@
   <arg name="max_gap" default="0.085" /> <!-- meters -->
   <arg name="min_effort" default="30.0" />
   <arg name="max_effort" default="100.0" />
+  <arg name="rtu"   default="true" />
+  <arg name="port"   default="/tmp/ttyUR" />
+
+  <group ns="$(arg gripper_name)" if="$(arg rtu)">
+    <node name="robotiq_2f_gripper_action_server" pkg="robotiq_2f_gripper_control"
+      type="Robotiq2FGripperRtuNode.py" args="$(arg port)">
+      <remap from="Robotiq2FGripperRobotInput" to="input" />
+      <remap from="Robotiq2FGripperRobotOutput" to="output" />
+    </node>
+  </group>
 
   <node name="robotiq_2f_gripper_action_server" pkg="robotiq_2f_gripper_action_server"
     type="robotiq_2f_gripper_action_server_node">
