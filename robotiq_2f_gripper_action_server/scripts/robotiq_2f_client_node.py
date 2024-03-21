@@ -47,11 +47,6 @@ from std_msgs.msg import Bool
 import rospy
 from control_msgs.msg import GripperCommandAction, GripperCommandGoal
 import actionlib
-from time import sleep
-from tkinter import N
-import roslib
-roslib.load_manifest('robotiq_2f_gripper_control')
-
 
 class Robotiq2fClient:
     def __init__(self, gripper_name="gripper") -> None:
@@ -61,11 +56,10 @@ class Robotiq2fClient:
         rospy.loginfo("Waiting for action server to start...")
         self.ac.wait_for_server()
         rospy.loginfo("Action server started.")
-        self.goal_pub = rospy.Publisher('/gripper/output', outputMsg.Robotiq2FGripper_robot_output, queue_size=1)
+        self.goal_pub = rospy.Publisher("/gripper/output", outputMsg.Robotiq2FGripper_robot_output, queue_size=1)
         self.init_reset()
-        
-        self.gripper_cmd_sub = rospy.Subscriber('/set_gripper_open', Bool, self.gripper_cmd_cb)
-        
+
+        self.gripper_cmd_sub = rospy.Subscriber("/set_gripper_open", Bool, self.gripper_cmd_cb)
 
     def gripper_cmd_cb(self, msg: Bool):
         if msg.data == True:
@@ -79,7 +73,7 @@ class Robotiq2fClient:
         self.reset()
         rospy.sleep(1)
         self.activate()
-        rospy.loginfo('init finished.')
+        rospy.loginfo("init finished.")
 
     def reset(self):
         command = outputMsg.Robotiq2FGripper_robot_output()
@@ -118,7 +112,7 @@ def simple_gripper_test():
 
     gripper_name = "gripper"
 
-    rospy.init_node('test_robotiq_2f_gripper_action_server')
+    rospy.init_node("test_robotiq_2f_gripper_action_server")
 
     ac = actionlib.SimpleActionClient(gripper_name, GripperCommandAction)
     rospy.loginfo("Waiting for action server to start...")
@@ -159,7 +153,7 @@ def simple_gripper_test():
 
 
 def class_gripper_test():
-    rospy.init_node('test_robotiq_2f_gripper_action_server')
+    rospy.init_node("test_robotiq_2f_gripper_action_server")
     robotiq = Robotiq2fClient()
     rospy.sleep(3)
     robotiq.init_reset()
@@ -171,12 +165,13 @@ def class_gripper_test():
 
 
 def main():
-    rospy.init_node('robotiq_client_node')
+    rospy.init_node("robotiq_client_node")
+    rospy.sleep(0.3)
     robotiq = Robotiq2fClient()
     rospy.spin()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # simple_gripper_test()
     # class_gripper_test()
     main()

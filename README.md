@@ -1,5 +1,35 @@
 # Robotiq
 
+## Control robotiq_2f_gripper by serial port
+### Init
+
+``` bash
+# first setup
+sudo usermod -a -G dialout $USER
+newgrp dialout  # or reboot
+sudo udevadm control --reload-rules && sudo udevadm trigger
+
+# check serial port
+ls /dev|grep ttyUSB
+```
+### (Optional 1) listen to topic '/set_gripper_open', then publish it
+``` bash
+# launch action server, action client
+roslaunch robotiq_2f_gripper_action_server robotiq_2f_gripper_as_client.launch port:=/dev/ttyUSB0
+
+# close gripper
+rostopic pub /set_gripper_open std_msgs/Bool "data: false" -1
+
+# open gripper
+rostopic pub /set_gripper_open std_msgs/Bool "data: true" -1
+```
+
+###  (Optional 2) direct use client code in Python
+```bash
+# 1. launch action server
+roslaunch robotiq_2f_gripper_action_server robotiq_2f_gripper_action_server robotiq_2f_gripper_as.launch  port:=/dev/ttyUSB0
+# 2. use the code in robotiq_2f_gripper_action_server/scripts/robotiq_2f_client_node.py
+```
 ## Status
 
 As of 2021-05-28, it would appear this repository is ***unmaintained***.
