@@ -38,6 +38,7 @@ Module baseRobotiq2FGripper: defines a base class for handling command and statu
 
 After being instanciated, a 'client' member must be added to the object. This client depends on the communication protocol used by the Gripper. As an example, the ROS node 'Robotiq2FGripperTcpNode.py' instanciate a robotiqbaseRobotiq2FGripper and adds a client defined in the module comModbusTcp.
 """
+import rospy
 
 from   robotiq_2f_gripper_control.msg import _Robotiq2FGripper_robot_input  as inputMsg
 from   robotiq_2f_gripper_control.msg import _Robotiq2FGripper_robot_output as outputMsg
@@ -104,16 +105,20 @@ class robotiqbaseRobotiq2FGripper:
         """Request the status from the gripper and return it in the Robotiq2FGripper_robot_input msg type."""
 
         #Acquire status from the Gripper
-        status = self.client.getStatus(6);
+        status = self.client.getStatus(6)
 
         #Message to output
         message = inputMsg.Robotiq2FGripper_robot_input()
 
+        if len(status) == 0:
+            rospy.logerr("Failed to read the registers from gripper")
+            return None
+        
         #Assign the values to their respective variables
-        message.gACT = (status[0] >> 0) & 0x01;
-        message.gGTO = (status[0] >> 3) & 0x01;
-        message.gSTA = (status[0] >> 4) & 0x03;
-        message.gOBJ = (status[0] >> 6) & 0x03;
+        message.gACT = (status[0] >> 0) & 0x01
+        message.gGTO = (status[0] >> 3) & 0x01
+        message.gSTA = (status[0] >> 4) & 0x03
+        message.gOBJ = (status[0] >> 6) & 0x03
         message.gFLT =  status[2]
         message.gPR  =  status[3]
         message.gPO  =  status[4]

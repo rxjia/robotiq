@@ -93,18 +93,19 @@ class communication:
 
       retries = 50
       # To get around spuratic - object has no attribute 'registers'
-      while not isinstance(response, ReadHoldingRegistersResponse):
+      while not isinstance(response, ReadHoldingRegistersResponse) and retries > 0:
           response = self.client.read_holding_registers(0x07D0, numRegs, unit=0x0009)
           retries -= 1
           time.sleep(0.01)
 
       #Instantiate output as an empty list
       output = []
-
-      #Fill the output with the bytes in the appropriate order
-      for i in range(0, numRegs):
-         output.append((response.getRegister(i) & 0xFF00) >> 8)
-         output.append( response.getRegister(i) & 0x00FF)
+      
+      if isinstance(response, ReadHoldingRegistersResponse):
+         #Fill the output with the bytes in the appropriate order
+         for i in range(0, numRegs):
+            output.append((response.getRegister(i) & 0xFF00) >> 8)
+            output.append( response.getRegister(i) & 0x00FF)
 
       #Output the result
       return output
