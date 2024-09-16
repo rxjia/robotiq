@@ -70,7 +70,7 @@ class Robotiq2FGripperURCapBridge:
         self.socket.connect((hostname, port))
         self.socket.settimeout(socket_timeout)
         is_ack = self._set_var('SID', gripper_sid)  # activate go to mode
-        print("set SID with ack: " + str(is_ack))
+        print("set SID with ack: " + f"{is_ack}")
 
     def disconnect(self):
         """Closes the connection with the gripper."""
@@ -78,7 +78,7 @@ class Robotiq2FGripperURCapBridge:
 
     def rq_is_gripper_activated(self):
         """Check if the gripper is activated."""
-        return GripperStatus(self._get_var(self.STA)) == GripperStatus.ACTIVE
+        return GripperStatus(int(self._get_var(self.STA))) == GripperStatus.ACTIVE
 
     def rq_reset(self):
         """Reset the gripper."""
@@ -88,7 +88,7 @@ class Robotiq2FGripperURCapBridge:
     def rq_reset_and_wait(self):
         self.rq_reset()
 
-        while (GripperStatus(self._get_var(self.STA)) != GripperStatus.RESET):
+        while (GripperStatus(int(self._get_var(self.STA))) != GripperStatus.RESET):
             time.sleep(0.1)
 
     def rq_activate(self):
@@ -97,12 +97,10 @@ class Robotiq2FGripperURCapBridge:
             self.rq_reset()
         self._set_var(self.ACT,1)
         """
-        ret = True
         if (not self.rq_is_gripper_activated()):
-            ret = self.rq_reset()
-        if not ret:
-            return False
-
+            self.rq_reset_and_wait()
+            time.sleep(0.5)
+        
         return self._set_vars({
             self.ACT: 1,
             self.GTO: 1,
@@ -113,6 +111,7 @@ class Robotiq2FGripperURCapBridge:
         self.rq_activate()
         while (not self.rq_is_gripper_activated()):
             # wait for activation completed
+            # print(f"ACT:{self._get_var(self.ACT)}, STA:{self._get_var(self.STA)},")
             time.sleep(0.1)
 
     # def sendCommand(self, command):
@@ -182,6 +181,7 @@ class Robotiq2FGripperURCapBridge:
             print("rq_reset_and_wait ...")
             self.rq_reset_and_wait()
             print("rq_reset_and_wait.")
+            time.sleep(0.5)
 
         print("rq_activate_and_wait ...")
         self.rq_activate_and_wait()
@@ -195,8 +195,8 @@ class Robotiq2FGripperURCapBridge:
 
     def is_active(self):
         """Returns whether the gripper is active."""
-        status = self._get_var(self.STA)
-        return GripperStatus(status) == GripperStatus.ACTIVE
+        status = GripperStatus(int(self._get_var(self.STA)))
+        return status == GripperStatus.ACTIVE
 
     def get_min_position(self):
         """Returns the minimum position the gripper can reach (open position)."""
@@ -295,8 +295,8 @@ class Robotiq2FGripperURCapBridge:
 
         # wait until not moving
         cur_obj = ObjectStatus(int(self._get_var(self.OBJ)))
-        while cur_obj == ObjectStatus.MOVING:
-            cur_obj = ObjectStatus(int(self._get_var(self.OBJ)))
+        # while cur_obj == ObjectStatus.MOVING:
+        #     cur_obj = ObjectStatus(int(self._get_var(self.OBJ)))
 
         # report the actual position and the object status
         final_pos = int(self._get_var(self.POS))
@@ -306,7 +306,7 @@ class Robotiq2FGripperURCapBridge:
 
 # Example stand-alone test code
 if __name__ == '__main__':
-    gripper = Robotiq2FGripperURCapBridge('10.2.0.50')
+    gripper = Robotiq2FGripperURCapBridge('10.2.0.51')
 
     print("activate ...")
     gripper.activate()

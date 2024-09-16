@@ -1,6 +1,6 @@
 # Robotiq
 
-## Control robotiq_2f_gripper by serial port
+## Control robotiq_2f_gripper by serial port (robotiq->USB->PC or robotiq->URe serials tool communication)
 ### Init
 
 ``` bash
@@ -30,6 +30,12 @@ rostopic pub /set_gripper_open std_msgs/Bool "data: true" -1
 roslaunch robotiq_2f_gripper_action_server robotiq_2f_gripper_action_server robotiq_2f_gripper_as.launch  port:=/dev/ttyUSB0
 # 2. use the code in robotiq_2f_gripper_action_server/scripts/robotiq_2f_client_node.py
 ```
+## Control robotiq_2f_gripper by socket (robotiq->USB->UR Control Box)
+``` bash
+# use the class Robotiq2FGripperURCapBridge in:
+robotiq_2f_gripper_control/src/robotiq_2f_gripper_control/robotiq_2f_gripper_urcap_bridge.py
+```
+
 ## Status
 
 As of 2021-05-28, it would appear this repository is ***unmaintained***.
