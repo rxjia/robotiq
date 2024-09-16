@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+
+<launch>
+  <arg name="gripper_name" default="gripper" />
+  <arg name="ip"   default="10.2.0.50" />
+  <group ns="$(arg gripper_name)">
+    <node name="robotiq_2f_gripper" pkg="robotiq_2f_gripper_control"
+      type="Robotiq2FGripperURCapNode.py" args="$(arg ip)">
+      <remap from="Robotiq2FGripperRobotInput" to="input" />
+      <remap from="Robotiq2FGripperRobotOutput" to="output" />
+    </node>
+  </group>
+</launch>
