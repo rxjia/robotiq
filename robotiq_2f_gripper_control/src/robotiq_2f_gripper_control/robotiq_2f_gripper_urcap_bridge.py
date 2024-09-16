@@ -1,6 +1,8 @@
 """Module to control Robotiq's gripper 2F-85."""
 # BASED ON: https://dof.robotiq.com/discussion/1962/programming-options-ur16e-2f-85#latest
 # ROS/Python2 port by felixvd
+#
+# Modified by: Rx Jia
 
 import socket
 import threading
@@ -123,17 +125,15 @@ class Robotiq2FGripperURCapBridge:
         :param var_dict: Dictionary of variables to set (variable_name, value).
         :return: True on successful reception of ack, false if no ack was received, indicating the set may not
         have been effective.
+        :todo: the return value is not accurate, as it only checks the last ack received.
         """
-        # construct unique command
-        cmd = "SET"
+        # construct unique command ONE BY ONE
         for variable, value in var_dict.items():
-            cmd += " " + variable + " " + str(value)
-        cmd += '\n'  # new line is required for the command to finish
-        # atomic commands send/rcv
-        with self.command_lock:
-            self.socket.sendall(cmd.encode(self.ENCODING))
-            data = self.socket.recv(1024)
-
+            cmd = f"SET {variable} {str(value)}\n"
+            # atomic commands send/rcv
+            with self.command_lock:
+                self.socket.sendall(cmd.encode(self.ENCODING))
+                data = self.socket.recv(1024)
         return self._is_ack(data)
 
     def _set_var(self, variable, value):
@@ -158,7 +158,7 @@ class Robotiq2FGripperURCapBridge:
             cmd = "GET " + variable + "\n"
             self.socket.sendall(cmd.encode(self.ENCODING))
             data = self.socket.recv(1024)
-
+            print(f"GET {variable} -> {data}")
         # expect data of the form 'VAR x', where VAR is an echo of the variable name, and X the value
         # note some special variables (like FLT) may send 2 bytes, instead of an integer. We assume integer here
         var_name, value_str = data.decode(self.ENCODING).split()
@@ -271,7 +271,7 @@ class Robotiq2FGripperURCapBridge:
         clip_for = clip_val(self._min_force, force, self._max_force)
 
         # moves to the given position with the given speed and force
-        var_dict = dict([(self.POS, clip_pos), (self.SPE, clip_spe), (self.FOR, clip_for), (self.GTO, 1)])
+        var_dict = dict([(self.POS, clip_pos), (self.SPE, clip_spe), (self.FOR, clip_for)])
         return self._set_vars(var_dict), clip_pos
 
     def move_and_wait_for_pos(self, position, speed, force):
@@ -303,6 +303,14 @@ class Robotiq2FGripperURCapBridge:
         final_obj = cur_obj
         return final_pos, final_obj
 
+    def open(self, speed=127, force=127):
+        """Opens the gripper fully, with the specified speed and force."""
+        return self.move_and_wait_for_pos(0, speed, force)
+    
+    def close(self, speed=127, force=127):
+        """Closes the gripper fully, with the specified speed and force."""
+        return self.move_and_wait_for_pos(255, speed, force)
+
 
 # Example stand-alone test code
 if __name__ == '__main__':
@@ -327,6 +335,10 @@ if __name__ == '__main__':
 
     print("go to 0")
     gripper.move_and_wait_for_pos(0, 127, 127)
+    time.sleep(1)
+    
+    print("go to 255")
+    gripper.move_and_wait_for_pos(255, 127, 127)
     time.sleep(1)
 
     print("done!")
