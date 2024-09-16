@@ -12,7 +12,7 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 # check serial port
 ls /dev|grep ttyUSB
 ```
-### (Optional 1) listen to topic '/set_gripper_open', then publish it
+### (Option 1) listen to topic '/set_gripper_open', then publish it
 ``` bash
 # launch action server, action client
 roslaunch robotiq_2f_gripper_action_server robotiq_2f_gripper_as_client.launch port:=/dev/ttyUSB0
@@ -24,7 +24,7 @@ rostopic pub /set_gripper_open std_msgs/Bool "data: false" -1
 rostopic pub /set_gripper_open std_msgs/Bool "data: true" -1
 ```
 
-###  (Optional 2) direct use client code in Python
+###  (Option 2) direct use client code in Python
 ```bash
 # 1. launch action server
 roslaunch robotiq_2f_gripper_action_server robotiq_2f_gripper_action_server robotiq_2f_gripper_as.launch  port:=/dev/ttyUSB0
