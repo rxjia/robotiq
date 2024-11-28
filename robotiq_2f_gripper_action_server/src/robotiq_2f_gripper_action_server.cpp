@@ -94,14 +94,13 @@ Robotiq2FGripperActionServer::Robotiq2FGripperActionServer(const std::string& na
   , as_(nh_, name, false)
   , action_name_(name)
   , gripper_params_(params)
+  , received_first_msg_(false)
 {
   as_.registerGoalCallback(boost::bind(&Robotiq2FGripperActionServer::goalCB, this));
   as_.registerPreemptCallback(boost::bind(&Robotiq2FGripperActionServer::preemptCB, this));
 
   state_sub_ = nh_.subscribe("input", 1, &Robotiq2FGripperActionServer::analysisCB, this);
   goal_pub_ = nh_.advertise<GripperOutput>("output", 1);
-
-  as_.start();
 }
 
 void Robotiq2FGripperActionServer::goalCB()
@@ -140,6 +139,14 @@ void Robotiq2FGripperActionServer::preemptCB()
 void Robotiq2FGripperActionServer::analysisCB(const GripperInput::ConstPtr& msg)
 {
   current_reg_state_ = *msg;
+
+  if(!received_first_msg_)
+  {
+    received_first_msg_ = true;
+    ROS_INFO("Received first message from gripper");
+
+    as_.start();
+  }
 
   if (!as_.isActive()) return;
 

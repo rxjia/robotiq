@@ -77,6 +77,7 @@ private:
   Robotiq2FGripperParams gripper_params_;
 
   std::string action_name_;
+  bool received_first_msg_;
 };
 
 }
