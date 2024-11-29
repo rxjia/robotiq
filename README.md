@@ -22,7 +22,7 @@ sudo apt install python3-pymodbus
 pip install pymodbus==3.6.9
 ```
 
-### (Option 1) listen to topic '/set_gripper_open', then publish it
+### (Option 1) server listen to topic '/gripper/set_gripper_open', another node publish it
 
 ``` bash
 
@@ -30,17 +30,17 @@ pip install pymodbus==3.6.9
 roslaunch robotiq_2f_gripper_action_server robotiq_2f_gripper_as_client.launch port:=/dev/ttyUSB0
 
 # close gripper
-rostopic pub /set_gripper_open std_msgs/Bool "data: false" -1
+rostopic pub /gripper/set_gripper_open std_msgs/Bool "data: false" -1
 
 # open gripper
-rostopic pub /set_gripper_open std_msgs/Bool "data: true" -1
+rostopic pub /gripper/set_gripper_open std_msgs/Bool "data: true" -1
 ```
 
 ### (Option 2) use client code in Python
 
 ```bash
 # 1. launch action server
-roslaunch robotiq_2f_gripper_action_server robotiq_2f_gripper_action_server robotiq_2f_gripper_as.launch  port:=/dev/ttyUSB0
+roslaunch robotiq_2f_gripper_action_server robotiq_2f_gripper_action_server robotiq_2f_gripper_as.launch port:=/dev/ttyUSB0
 # 2. use the code in robotiq_2f_gripper_action_server/scripts/robotiq_2f_client_node.py
 ```
 

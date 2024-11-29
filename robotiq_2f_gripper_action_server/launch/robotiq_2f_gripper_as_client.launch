@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 
 <launch>
   <arg name="gripper_name" default="gripper" />
@@ -6,30 +6,32 @@
   <arg name="max_gap" default="0.085" /> <!-- meters -->
   <arg name="min_effort" default="30.0" />
   <arg name="max_effort" default="100.0" />
-  <arg name="rtu"   default="true" />
-  <arg name="port"   default="/tmp/ttyUR" />
+  <arg name="rtu" default="true" />
+  <arg name="port" default="/tmp/ttyUR" />
 
-  <group ns="$(arg gripper_name)" if="$(arg rtu)">
-    <node name="robotiq_2f_gripper_action_server" pkg="robotiq_2f_gripper_control"
+  <group ns="$(arg gripper_name)">
+    <node if="$(arg rtu)" name="robotiq_2f_rtu_node" pkg="robotiq_2f_gripper_control"
       type="Robotiq2FGripperRtuNode.py" args="$(arg port)">
       <remap from="Robotiq2FGripperRobotInput" to="input" />
       <remap from="Robotiq2FGripperRobotOutput" to="output" />
     </node>
+
+    <node name="robotiq_2f_action_server" pkg="robotiq_2f_gripper_action_server"
+      type="robotiq_2f_gripper_action_server_node" output="screen">
+      <param name="gripper_name" type="str" value="gripper_action" />
+      <param name="min_gap" type="double" value="$(arg min_gap)" />
+      <param name="max_gap" type="double" value="$(arg max_gap)" />
+      <param name="min_effort" type="double" value="$(arg min_effort)" />
+      <param name="max_effort" type="double" value="$(arg max_effort)" />
+
+      <remap from="input" to="input" />
+      <remap from="output" to="output" />
+    </node>
+
+    <node name="robotiq_2f_client" pkg="robotiq_2f_gripper_action_server"
+      type="robotiq_2f_client_node.py" output="screen">
+    </node>
+
   </group>
-
-  <node name="robotiq_2f_gripper_action_server" pkg="robotiq_2f_gripper_action_server"
-    type="robotiq_2f_gripper_action_server_node">
-    <param name="gripper_name" type="str" value="$(arg gripper_name)" />
-    <param name="min_gap" type="double" value="$(arg min_gap)" />
-    <param name="max_gap" type="double" value="$(arg max_gap)" />
-    <param name="min_effort" type="double" value="$(arg min_effort)" />
-    <param name="max_effort" type="double" value="$(arg max_effort)" />
-
-    <remap from="input" to="$(arg gripper_name)/input" />
-    <remap from="output" to="$(arg gripper_name)/output" />
-  </node>
-
-  <node name="robotiq_2f_client" pkg="robotiq_2f_gripper_action_server" type="robotiq_2f_client_node.py" output="screen">
-  </node>
 
 </launch>

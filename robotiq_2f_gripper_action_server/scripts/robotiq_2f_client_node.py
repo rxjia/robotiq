@@ -42,24 +42,25 @@ This serves as an example for publishing messages on the 'Robotiq2FGripperRobotO
 """
 
 from __future__ import print_function
-from robotiq_2f_gripper_control.msg import _Robotiq2FGripper_robot_output as outputMsg
+from robotiq_2f_gripper_control.msg import Robotiq2FGripper_robot_output as outputMsg
 from std_msgs.msg import Bool
 import rospy
 from control_msgs.msg import GripperCommandAction, GripperCommandGoal
 import actionlib
 
 class Robotiq2fClient:
-    def __init__(self, gripper_name="gripper") -> None:
-        self.gripper_name = gripper_name
-
-        self.ac = actionlib.SimpleActionClient(gripper_name, GripperCommandAction)
+    def __init__(self) -> None:
+        self.ac = actionlib.SimpleActionClient("gripper_action", GripperCommandAction)
         rospy.loginfo("Waiting for action server to start...")
         self.ac.wait_for_server()
         rospy.loginfo("Action server started.")
-        self.goal_pub = rospy.Publisher("/gripper/output", outputMsg.Robotiq2FGripper_robot_output, queue_size=1)
+
+        self.goal_pub = rospy.Publisher("output", outputMsg, queue_size=1)
+        
+        rospy.sleep(1)
         self.init_reset()
 
-        self.gripper_cmd_sub = rospy.Subscriber("/set_gripper_open", Bool, self.gripper_cmd_cb)
+        self.gripper_cmd_sub = rospy.Subscriber("set_gripper_open", Bool, self.gripper_cmd_cb)
 
     def gripper_cmd_cb(self, msg: Bool):
         if msg.data == True:
@@ -76,12 +77,12 @@ class Robotiq2fClient:
         rospy.loginfo("init finished.")
 
     def reset(self):
-        command = outputMsg.Robotiq2FGripper_robot_output()
+        command = outputMsg()
         command.rACT = 0x0
         self.goal_pub.publish(command)
 
     def activate(self):
-        command = outputMsg.Robotiq2FGripper_robot_output()
+        command = outputMsg()
         command.rACT = 0x1
         self.goal_pub.publish(command)
 
