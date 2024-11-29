@@ -1,7 +1,8 @@
 # Robotiq
 
 ## Control robotiq_2f_gripper by serial port (robotiq->USB->PC or robotiq->URe serials tool communication)
-### Init
+
+### Init (one-time setup)
 
 ``` bash
 # first setup
@@ -9,11 +10,22 @@ sudo usermod -a -G dialout $USER
 newgrp dialout  # or reboot
 sudo udevadm control --reload-rules && sudo udevadm trigger
 
-# check serial port
+# check serial port ---------------------
 ls /dev|grep ttyUSB
+# or check serial port forwarded from UR e-series
+ls /tmp|grep tty
+
+# install pymodbus (the version is important) ---------------------
+# install pymodbus 2.1.0 via apt
+sudo apt install python3-pymodbus
+# or install pymodbus 3.6.9 via pip
+pip install pymodbus==3.6.9
 ```
+
 ### (Option 1) listen to topic '/set_gripper_open', then publish it
+
 ``` bash
+
 # launch action server, action client
 roslaunch robotiq_2f_gripper_action_server robotiq_2f_gripper_as_client.launch port:=/dev/ttyUSB0
 
@@ -24,13 +36,16 @@ rostopic pub /set_gripper_open std_msgs/Bool "data: false" -1
 rostopic pub /set_gripper_open std_msgs/Bool "data: true" -1
 ```
 
-###  (Option 2) direct use client code in Python
+### (Option 2) use client code in Python
+
 ```bash
 # 1. launch action server
 roslaunch robotiq_2f_gripper_action_server robotiq_2f_gripper_action_server robotiq_2f_gripper_as.launch  port:=/dev/ttyUSB0
 # 2. use the code in robotiq_2f_gripper_action_server/scripts/robotiq_2f_client_node.py
 ```
+
 ## Control robotiq_2f_gripper by socket (robotiq->USB->UR Control Box)
+
 ``` bash
 # use the class Robotiq2FGripperURCapBridge in:
 robotiq_2f_gripper_control/src/robotiq_2f_gripper_control/robotiq_2f_gripper_urcap_bridge.py
